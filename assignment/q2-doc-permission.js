@@ -1,12 +1,12 @@
 /*
     Create a class "Document" that extends "Permission". In the Document class,
-    
-    - there should be a constructor that takes in 3 arguments: 
+
+    - there should be a constructor that takes in 3 arguments:
         1. role (pass to parent constructor using "super")
         2. operation (pass to parent constructor using "super")
         3. content (store in private variable)
     - there should be a function "process()" that calls "check()" function declared in the Permission class.
-    
+
     Instantiate from the Document class to create an object that calls "process()" with the following output:
     Scenario 1:
         const d = new Document(Permission.RolesConst.EDITOR, Permission.OperationsConst.UPDATE, "Hello content")
@@ -18,9 +18,8 @@
         const d = new Document(Permission.RolesConst.OWNER, Permission.OperationsConst.DELETE, "Hello content")
         d.process(); // "Allowed"
 */
-
 class Permission{
-
+    // Define the static constants OperationsConst and RolesConst.
     // These are static constants that show what are the possible values when checking permission.
     static OperationsConst = {
         CREATE:"CREATE",
@@ -33,12 +32,11 @@ class Permission{
         EDITOR:"EDITOR",
         READER:"READER"
     }
-
-    // private variables
+    // Define private variables #role and #operation
     #role;
     #operation;
 
-    // constructor
+    // Define the constructor to set the #role and #operation
     constructor(role, operation){
         if(this.constructor.name === "Permission"){
             throw new Error("This class cannot be instantiated");
@@ -47,11 +45,13 @@ class Permission{
         this.#operation = operation
     }
 
-    // function
+    // Define the check() method/function in the Permission class
     check(){
-        
+        // Convert operation to uppercase
         const ops = this.#operation.toUpperCase();
 
+        /* Use switch to handle different roles and operations
+         Return true or false based on conditions */
         switch(this.#role.toUpperCase()){
             case Permission.RolesConst.OWNER:
                 return true;
@@ -67,9 +67,38 @@ class Permission{
                 return false;
             default:
                 return false;
-                
+
         }
     }
 }
+// Document is a child class of Permission
+class Document extends Permission{
+  #content; // private field
+  // Define the constructor that takes role, operation, and content as arguments
+  constructor(role, operation, content){
+    // Call the parent class's constructor using super(role, operation)
+    super(role, operation);
+    /* Store content in a private variable
+    bec Private field '#num' must be declared in an enclosing class */
+    this.#content = content;
+  }
+  process(){
+    // Call the inherited check() method
+    const isAllowed = this.check();
 
-// Add code here
+    // Print "Allowed" or "Blocked" based on the check() result
+    if (isAllowed) {
+      console.log("Allowed");
+    } else {
+      console.log("Blocked");
+    }
+  }
+}
+let d1 = new Document(Permission.RolesConst.EDITOR, Permission.OperationsConst.UPDATE, "Hello content"); // Create object d1 from Document(Permission.RolesConst.EDITOR, Permission.OperationsConst.UPDATE, "Hello content")
+d1.process(); // Call d1.process()
+
+let d2 = new Document(Permission.RolesConst.READER, Permission.OperationsConst.UPDATE, "Hello content"); // Create object d2 from Document(Permission.RolesConst.READER, Permission.OperationsConst.UPDATE, "Hello content")
+d2.process(); // Call d2.process()
+
+let d3 = new Document(Permission.RolesConst.OWNER, Permission.OperationsConst.DELETE, "Hello content"); // Create object d3 from Document(Permission.RolesConst.OWNER, Permission.OperationsConst.DELETE, "Hello content")
+d3.process(); // Call d3.process()
